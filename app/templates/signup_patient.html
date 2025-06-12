@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Signup{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="auth-container">
+        <div class="auth-card signup-card">
+            <h2>Patient Signup</h2>
+
+            <!-- Step 1: Basic Details -->
+            <div class="form-step active" id="step-1">
+                <form id="basic-details-form" class="form">
+                    <h3>Basic Details</h3>
+
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" name="first_name" id="first_name" required>
+                        <div class="error" id="first_name_error">First name is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" name="middle_name" id="middle_name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" name="last_name" id="last_name" required>
+                        <div class="error" id="last_name_error">Last name is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email" required>
+                        <div class="error" id="email_error">Valid email is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="text" name="phone_number" id="phone_number" required>
+                        <div class="error" id="phone_number_error">Phone number is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" required>
+                        <div class="error" id="password_error">Password is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" name="age" id="age" required min="0">
+                        <div class="error" id="age_error">Age is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Select...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error" id="gender_error">Gender is required</div>
+                    </div>
+
+                    <h3>Address</h3>
+
+                    <div class="form-group">
+                        <label for="street">Street:</label>
+                        <input type="text" name="street" id="street" required>
+                        <div class="error" id="street_error">Street is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" name="city" id="city" required>
+                        <div class="error" id="city_error">City is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">State:</label>
+                        <input type="text" name="state" id="state" required>
+                        <div class="error" id="state_error">State is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="zip">ZIP Code:</label>
+                        <input type="text" name="zip" id="zip" required>
+                        <div class="error" id="zip_error">ZIP code is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">Country:</label>
+                        <input type="text" name="country" id="country" required>
+                        <div class="error" id="country_error">Country is required</div>
+                    </div>
+
+                    <h3>Emergency Contact</h3>
+
+                    <div class="form-group">
+                        <label for="emergency_name">Emergency Contact Name:</label>
+                        <input type="text" name="emergency_name" id="emergency_name" required>
+                        <div class="error" id="emergency_name_error">Emergency contact name is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergency_phone">Emergency Contact Phone:</label>
+                        <input type="text" name="emergency_phone" id="emergency_phone" required>
+                        <div class="error" id="emergency_phone_error">Emergency contact phone is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergency_relationship">Relationship:</label>
+                        <input type="text" name="emergency_relationship" id="emergency_relationship" required>
+                        <div class="error" id="emergency_relationship_error">Relationship is required</div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="auth-btn auth-btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: Medical Details -->
+            <div class="form-step" id="step-2">
+                <form id="medical-details-form" class="form" action="/auth/signup" method="post">
+                    <h3>Medical Details</h3>
+
+                    <div class="form-group">
+                        <label for="allergies">Allergies (comma separated):</label>
+                        <input type="text" name="allergies" id="allergies">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="family_medical_history">Family Medical History:</label>
+                        <textarea name="family_medical_history" id="family_medical_history" rows="4"></textarea>
+                    </div>
+
+                    <!-- Medications -->
+                    <h4>Current Medications</h4>
+                    <div id="medications-container">
+                        <div class="medication-entry">
+                            <div class="form-group">
+                                <label for="medication_name_0">Medication Name:</label>
+                                <input type="text" id="medication_name_0" name="medication_name_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="medication_dosage_0">Dosage:</label>
+                                <input type="text" id="medication_dosage_0" name="medication_dosage_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="medication_frequency_0">Frequency:</label>
+                                <input type="text" id="medication_frequency_0" name="medication_frequency_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="medication_start_date_0">Start Date:</label>
+                                <input type="date" id="medication_start_date_0" name="medication_start_date_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="medication_notes_0">Notes:</label>
+                                <textarea id="medication_notes_0" name="medication_notes_0" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="auth-btn auth-btn-secondary" onclick="addMedication()">Add Another Medication</button>
+
+                    <!-- Diagnoses -->
+                    <h4>Past Diagnoses</h4>
+                    <div id="diagnoses-container">
+                        <div class="diagnosis-entry">
+                            <div class="form-group">
+                                <label for="diagnosis_disease_0">Disease:</label>
+                                <input type="text" id="diagnosis_disease_0" name="diagnosis_disease_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="diagnosis_year_0">Year:</label>
+                                <input type="number" id="diagnosis_year_0" name="diagnosis_year_0" min="1900">
+                            </div>
+                            <div class="form-group">
+                                <label for="diagnosis_date_0">Diagnosis Date:</label>
+                                <input type="date" id="diagnosis_date_0" name="diagnosis_date_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="diagnosis_notes_0">Notes:</label>
+                                <textarea id="diagnosis_notes_0" name="diagnosis_notes_0" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="auth-btn auth-btn-secondary" onclick="addDiagnosis()">Add Another Diagnosis</button>
+
+                    <!-- Immunizations -->
+                    <h4>Immunizations</h4>
+                    <div id="immunizations-container">
+                        <div class="immunization-entry">
+                            <div class="form-group">
+                                <label for="immunization_vaccine_0">Vaccine:</label>
+                                <input type="text" id="immunization_vaccine_0" name="immunization_vaccine_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="immunization_date_0">Date:</label>
+                                <input type="date" id="immunization_date_0" name="immunization_date_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="immunization_administered_by_0">Administered By:</label>
+                                <input type="text" id="immunization_administered_by_0" name="immunization_administered_by_0">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="auth-btn auth-btn-secondary" onclick="addImmunization()">Add Another Immunization</button>
+
+                    <div class="button-group">
+                        <button type="button" class="auth-btn auth-btn-secondary" onclick="prevStep()">Previous</button>
+                        <button type="submit" class="auth-btn auth-btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <p class="auth-link">Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentStep = 1;
+    let medicationCount = 1;
+    let diagnosisCount = 1;
+    let immunizationCount = 1;
+
+    function nextStep() {
+        if (validateBasicDetails()) {
+            document.getElementById('step-1').classList.remove('active');
+            document.getElementById('step-2').classList.add('active');
+            currentStep = 2;
+        }
+    }
+
+    function prevStep() {
+        document.getElementById('step-2').classList.remove('active');
+        document.getElementById('step-1').classList.add('active');
+        currentStep = 1;
+    }
+
+    function validateBasicDetails() {
+        let isValid = true;
+        const requiredFields = [
+            { id: 'first_name', errorId: 'first_name_error' },
+            { id: 'last_name', errorId: 'last_name_error' },
+            { id: 'email', errorId: 'email_error' },
+            { id: 'phone_number', errorId: 'phone_number_error' },
+            { id: 'password', errorId: 'password_error' },
+            { id: 'age', errorId: 'age_error' },
+            { id: 'gender', errorId: 'gender_error' },
+            { id: 'street', errorId: 'street_error' },
+            { id: 'city', errorId: 'city_error' },
+            { id: 'state', errorId: 'state_error' },
+            { id: 'zip', errorId: 'zip_error' },
+            { id: 'country', errorId: 'country_error' },
+            { id: 'emergency_name', errorId: 'emergency_name_error' },
+            { id: 'emergency_phone', errorId: 'emergency_phone_error' },
+            { id: 'emergency_relationship', errorId: 'emergency_relationship_error' }
+        ];
+
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field.id);
+            const error = document.getElementById(field.errorId);
+            if (!input.value.trim()) {
+                error.style.display = 'block';
+                isValid = false;
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('email_error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email.value && !emailRegex.test(email.value)) {
+            emailError.textContent = 'Invalid email format';
+            emailError.style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function addMedication() {
+        const container = document.getElementById('medications-container');
+        const entry = document.createElement('div');
+        entry.className = 'medication-entry';
+        entry.innerHTML = `
+            <div class="form-group">
+                <label for="medication_name_${medicationCount}">Medication Name:</label>
+                <input type="text" id="medication_name_${medicationCount}" name="medication_name_${medicationCount}">
+            </div>
+            <div class="form-group">
+                <label for="medication_dosage_${medicationCount}">Dosage:</label>
+                <input type="text" id="medication_dosage_${medicationCount}" name="medication_dosage_${medicationCount}">
+            </div>
+            <div class="form-group">
+                <label for="medication_frequency_${medicationCount}">Frequency:</label>
+                <input type="text" id="medication_frequency_${medicationCount}" name="medication_frequency_${medicationCount}">
+            </div>
+            <div class="form-group">
+                <label for="medication_start_date_${medicationCount}">Start Date:</label>
+                <input type="date" id="medication_start_date_${medicationCount}" name="medication_start_date_${medicationCount}">
+            </div>
+            <div class="form-group">
+                <label for="medication_notes_${medicationCount}">Notes:</label>
+                <textarea id="medication_notes_${medicationCount}" name="medication_notes_${medicationCount}" rows="2"></textarea>
+            </div>
+        `;
+        container.appendChild(entry);
+        medicationCount++;
+    }
+
+    function addDiagnosis() {
+        const container = document.getElementById('diagnoses-container');
+        const entry = document.createElement('div');
+        entry.className = 'diagnosis-entry';
+        entry.innerHTML = `
+            <div class="form-group">
+                <label for="diagnosis_disease_${diagnosisCount}">Disease:</label>
+                <input type="text" id="diagnosis_disease_${diagnosisCount}" name="diagnosis_disease_${diagnosisCount}">
+            </div>
+            <div class="form-group">
+                <label for="diagnosis_year_${diagnosisCount}">Year:</label>
+                <input type="number" id="diagnosis_year_${diagnosisCount}" name="diagnosis_year_${diagnosisCount}" min="1900">
+            </div>
+            <div class="form-group">
+                <label for="diagnosis_date_${diagnosisCount}">Diagnosis Date:</label>
+                <input type="date" id="diagnosis_date_${diagnosisCount}" name="diagnosis_date_${diagnosisCount}">
+            </div>
+            <div class="form-group">
+                <label for="diagnosis_notes_${diagnosisCount}">Notes:</label>
+                <textarea id="diagnosis_notes_${diagnosisCount}" name="diagnosis_notes_${diagnosisCount}" rows="2"></textarea>
+            </div>
+        `;
+        container.appendChild(entry);
+        diagnosisCount++;
+    }
+
+    function addImmunization() {
+        const container = document.getElementById('immunizations-container');
+        const entry = document.createElement('div');
+        entry.className = 'immunization-entry';
+        entry.innerHTML = `
+            <div class="form-group">
+                <label for="immunization_vaccine_${immunizationCount}">Vaccine:</label>
+                <input type="text" id="immunization_vaccine_${immunizationCount}" name="immunization_vaccine_${immunizationCount}">
+            </div>
+            <div class="form-group">
+                <label for="immunization_date_${immunizationCount}">Date:</label>
+                <input type="date" id="immunization_date_${immunizationCount}" name="immunization_date_${immunizationCount}">
+            </div>
+            <div class="form-group">
+                <label for="immunization_administered_by_${immunizationCount}">Administered By:</label>
+                <input type="text" id="immunization_administered_by_${immunizationCount}" name="immunization_administered_by_${immunizationCount}">
+            </div>
+        `;
+        container.appendChild(entry);
+        immunizationCount++;
+    }
+
+    document.getElementById('medical-details-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const basicForm = document.getElementById('basic-details-form');
+        const medicalForm = document.getElementById('medical-details-form');
+        const basicData = new FormData(basicForm);
+        const medicalData = new FormData(medicalForm);
+
+        const patientData = {
+            name: {
+                first: basicData.get('first_name'),
+                middle: basicData.get('middle_name') || null,
+                last: basicData.get('last_name')
+            },
+            email: basicData.get('email'),
+            phone_number: basicData.get('phone_number'),
+            password: basicData.get('password'),
+            age: parseInt(basicData.get('age')),
+            gender: basicData.get('gender'),
+            address: {
+                street: basicData.get('street'),
+                city: basicData.get('city'),
+                state: basicData.get('state'),
+                zip: basicData.get('zip'),
+                country: basicData.get('country')
+            },
+            emergency_contact: {
+                name: basicData.get('emergency_name'),
+                phone: basicData.get('emergency_phone'),
+                relationship: basicData.get('emergency_relationship')
+            },
+            medical_record: {
+                patient_id: '',
+                current_medications: [],
+                diagnoses: [],
+                allergies: medicalData.get('allergies') ? medicalData.get('allergies').split(',').map(a => a.trim()) : [],
+                immunizations: [],
+                family_medical_history: medicalData.get('family_medical_history') || null
+            }
+        };
+
+        for (let i = 0; i < medicationCount; i++) {
+            if (medicalData.get(`medication_name_${i}`)) {
+                patientData.medical_record.current_medications.push({
+                    name: medicalData.get(`medication_name_${i}`),
+                    dosage: medicalData.get(`medication_dosage_${i}`) || '',
+                    frequency: medicalData.get(`medication_frequency_${i}`) || '',
+                    start_date: medicalData.get(`medication_start_date_${i}`) || new Date().toISOString(),
+                    notes: medicalData.get(`medication_notes_${i}`) || null
+                });
+            }
+        }
+
+        for (let i = 0; i < diagnosisCount; i++) {
+            if (medicalData.get(`diagnosis_disease_${i}`)) {
+                patientData.medical_record.diagnoses.push({
+                    disease: medicalData.get(`diagnosis_disease_${i}`),
+                    year: parseInt(medicalData.get(`diagnosis_year_${i}`)) || new Date().getFullYear(),
+                    diagnosis_date: medicalData.get(`diagnosis_date_${i}`) || new Date().toISOString(),
+                    notes: medicalData.get(`diagnosis_notes_${i}`) || null
+                });
+            }
+        }
+
+        for (let i = 0; i < immunizationCount; i++) {
+            if (medicalData.get(`immunization_vaccine_${i}`)) {
+                patientData.medical_record.immunizations.push({
+                    vaccine: medicalData.get(`immunization_vaccine_${i}`),
+                    date: medicalData.get(`immunization_date_${i}`) || new Date().toISOString(),
+                    administered_by: medicalData.get(`immunization_administered_by_${i}`) || '',
+                    lot_number: null
+                });
+            }
+        }
+
+        try {
+            const response = await fetch('/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(patientData)
+            });
+
+            if (response.ok) {
+                alert('Signup successful!');
+                window.location.href = '/login';
+            } else {
+                const errorData = await response.json();
+                alert('Signup failed: ' + errorData.detail);
+            }
+        } catch (error) {
+            alert('An error occurred: ' + error.message);
+        }
+    });
+</script>
+{% endblock %}

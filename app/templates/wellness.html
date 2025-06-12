@@ -1,0 +1,78 @@
+<!-- app/templates/wellness.html -->
+{% extends "base.html" %}
+
+{% block title %}Wellness Plan - Aarogya AI{% endblock %}
+
+{% block content %}
+<!-- Include Animate.css from CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<!-- Loading Spinner -->
+<div id="loading-spinner" class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
+</div>
+
+<!-- Wellness Plan Container -->
+<div id="wellness-content" class="hidden max-w-4xl mx-auto my-8 animate__animated animate__fadeIn">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 shadow-xl rounded-2xl p-8">
+        <h1 class="text-3xl font-bold text-blue-700 mb-8 text-center">Your Personalized Wellness Plan</h1>
+
+        <!-- Diet Recommendations -->
+        <div class="mb-8 bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp animate__delay-1s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Diet Recommendations
+            </h2>
+            <p class="text-gray-600 leading-relaxed">{{ wellness_plan.diet }}</p>
+        </div>
+
+        <!-- Healthy Habits -->
+        <div class="mb-8 bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp animate__delay-2s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <svg class="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+                Healthy Habits
+            </h2>
+            <p class="text-gray-600 leading-relaxed">{{ wellness_plan.habits }}</p>
+        </div>
+
+        <!-- Things to Avoid -->
+        <div class="mb-8 bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp animate__delay-3s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                Things to Avoid
+            </h2>
+            <p class="text-gray-600 leading-relaxed">{{ wellness_plan.avoid }}</p>
+        </div>
+
+        <!-- Exercise Plan -->
+        <div class="mb-8 bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 animate__animated animate__fadeInUp animate__delay-4s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <svg class="w-6 h-6 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Exercise Plan
+            </h2>
+            <p class="text-gray-600 leading-relaxed">{{ wellness_plan.exercise }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Hide Spinner and Show Content -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const spinner = document.getElementById("loading-spinner");
+        const content = document.getElementById("wellness-content");
+        // Simulate content load (replace with actual async logic if needed)
+        setTimeout(() => {
+            spinner.classList.add("hidden");
+            content.classList.remove("hidden");
+        }, 500); // Adjust delay as needed
+    });
+</script>
+{% endblock %}

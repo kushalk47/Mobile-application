@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{#
+   This template extends base.html, which already includes:
+   - Basic HTML structure (<DOCTYPE>, <html>, <head>, <body>)
+   - Meta tags (charset, viewport)
+   - Title block
+   - Font links (Inter)
+   - Link to /static/css/styles.css
+   - Tailwind CSS CDN link
+   - Favicon link
+   - extra_head block
+   - Header and Footer
+   - Base JavaScript
+   - content block (where this template's main content goes)
+   - extra_body_scripts block
+
+   We do NOT need to include <head> or <body> tags here,
+   nor the links already present in base.html.
+#}
+
+{#
+   Optionally, you could override the title block if you want a specific title
+   for the login page, e.g.:
+{% block title %}Login - AarogyaAi{% endblock %}
+   If you don't override it, it will use the default title from base.html.
+#}
+
+
+{# Place the main content of the login page inside the 'content' block #}
+{% block content %}
+<div class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"> {# Added padding and centering classes #}
+    <div class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+
+        {# Display Success Message #}
+        {% if signup_success %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Success:</strong>
+                <span class="block sm:inline">Account created successfully! Please login.</span>
+            </div>
+        {% endif %}
+
+        {# Display Error Message #}
+        {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Error:</strong>
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <form action="/auth/login" method="post">
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                <input type="email" id="email" name="email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                <input type="password" id="password" name="password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+                    Login
+                </button>
+            </div>
+        </form>
+        <p class="text-center text-gray-500 text-sm mt-6">
+            Don't have an account? <a href="/auth/signup" class="text-blue-500 hover:text-blue-700">Sign Up here</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{#
+   If you had any specific JavaScript needed ONLY for the login page,
+   you could add a block like this:
+{% block extra_body_scripts %}
+<script>
+   // Login specific script
+</script>
+{% endblock %}
+#}

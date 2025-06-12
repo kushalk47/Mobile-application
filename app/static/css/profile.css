@@ -1,0 +1,161 @@
+/* static/css/profile.css */
+
+.profile-container {
+    max-width: 800px; /* Adjust as needed */
+    margin: 20px auto; /* Center the container */
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.profile-toggle-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.toggle-button {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* Smooth transition for hover/active */
+}
+
+.toggle-button.active {
+    background-color: #007bff; /* Example active color */
+    color: white;
+    border-color: #007bff;
+}
+
+.toggle-button:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.profile-section {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-top: 15px; /* Space below buttons */
+}
+
+.profile-section.hidden {
+    display: none; /* Hide the section by default or when toggled off */
+}
+
+.profile-section h2 {
+    margin-top: 0;
+    color: #555;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.profile-section h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.detail-group {
+    margin-bottom: 10px;
+    display: flex; /* Use flexbox for better alignment */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.detail-group label {
+    font-weight: bold;
+    display: inline-block;
+    width: 150px; /* Adjust label width as needed for alignment */
+    margin-right: 10px;
+    color: #333;
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.detail-group span {
+    display: inline-block;
+    color: #555;
+    flex-grow: 1; /* Allow span to take up remaining space */
+}
+
+/* Specific styling for address block */
+.detail-group label:has(+ span br) { /* Target label specifically for address */
+     align-self: flex-start; /* Align label to the top if span has multiple lines */
+}
+
+
+.profile-section ul {
+    list-style: disc;
+    margin-left: 20px;
+    padding-left: 0;
+}
+
+.profile-section li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    color: #555;
+}
+
+/* --- Media Queries --- */
+
+/* For screens smaller than 600px */
+@media (max-width: 600px) {
+    .profile-container {
+        margin: 10px; /* Reduce margin on very small screens */
+        padding: 15px; /* Reduce padding */
+    }
+
+    .profile-toggle-buttons {
+         display: flex; /* Arrange buttons in a flex row */
+         justify-content: center;
+         flex-wrap: wrap; /* Allow buttons to wrap if needed */
+    }
+
+    .toggle-button {
+        flex-basis: 45%; /* Make buttons take up roughly half width */
+        margin: 5px 2%; /* Adjust margin for spacing when wrapped */
+        text-align: center; /* Center text in buttons */
+    }
+
+
+    .profile-section {
+        padding: 15px; /* Reduce padding in sections */
+    }
+
+    .detail-group {
+        flex-direction: column; /* Stack label and span vertically */
+        margin-bottom: 15px; /* Increase space between stacked groups */
+    }
+
+    .detail-group label {
+        width: auto; /* Allow label width to be automatic */
+        margin-right: 0; /* Remove right margin */
+        margin-bottom: 5px; /* Add space below label */
+    }
+
+     .profile-section ul {
+        margin-left: 10px; /* Reduce list indentation */
+    }
+
+    .profile-section li {
+        margin-bottom: 10px; /* Add space between list items */
+    }
+}
+
+/* For screens smaller than 400px */
+@media (max-width: 400px) {
+    .toggle-button {
+        flex-basis: 90%; /* Make buttons take up almost full width */
+        margin: 5px auto; /* Center buttons when stacked */
+    }
+}

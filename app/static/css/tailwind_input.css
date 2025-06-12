@@ -1,0 +1,13 @@
+/* C:\healthcare_final\static\css\tailwind_input.css */
+@import "tailwindcss";
+
+/* These directives tell Tailwind which layers to include */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+   You can add any custom CSS here that you want to be processed by Tailwind
+   (e.g., using @apply), but for now, just the directives are sufficient
+   if you want to keep your main styles in styles.css.
+*/

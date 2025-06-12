@@ -1,0 +1,68 @@
+<!-- app/templates/doctor_dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-br from-blue-50 to-white min-h-screen">
+    <h1 class="text-4xl font-extrabold text-blue-900 mb-8 animate-in fade-in slide-in-from-top duration-700">
+        Doctor Dashboard
+    </h1>
+
+    <div class="mb-8 p-6 bg-white rounded-lg shadow-md animate-in fade-in slide-in-from-left duration-700">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.243 3 3 0 00-4.243 4.243zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Search Patient
+        </h2>
+        <form action="/dashboard/search-patient" method="post" class="flex items-center space-x-4">
+            <input type="text" name="search_query" placeholder="Enter patient name or email" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Search
+            </button>
+        </form>
+        {% if search_query %}
+            {% if search_results %}
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-blue-700 mb-2">Search Results for "{{ search_query }}"</h3>
+                <ul class="list-disc list-inside text-gray-800">
+                    {% for patient in search_results %}
+                    <li>
+                        <a href="/dashboard/patient/{{ patient._id }}" class="text-blue-500 hover:underline">
+                            {{ patient.name.first }} {% if patient.name.middle %}{{ patient.name.middle }}{% endif %} {{ patient.name.last }} ({{ patient.email }})
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <p class="mt-4 text-gray-600">No patients found matching your search query.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="mt-8 p-6 bg-white rounded-lg shadow-md animate-in fade-in slide-in-from-right duration-700">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-4 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1m0 3h-9" />
+            </svg>
+            Doctor Information
+        </h2>
+        <p class="text-gray-800">Welcome, Dr. {{ doctor.name.first }} {{ doctor.name.last }}!</p>
+        <p class="text-gray-600">Email: {{ doctor.email }}</p>
+        {# Add more doctor-specific information here if needed #}
+    </div>
+
+    <div class="mt-8 flex space-x-4">
+        <a href="/dashboard/appointments"
+           class="inline-block px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-md">
+            View Appointments
+        </a>
+        <a href="/auth/logout"
+           class="inline-block px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition-all duration-300 transform hover:-translate-y-1 shadow-md">
+            Logout
+        </a>
+    </div>
+</div>
+{% endblock %}

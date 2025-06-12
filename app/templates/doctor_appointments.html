@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Appointments{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-br from-teal-100 via-white to-teal-50 min-h-screen"> {# Adjusted gradient colors #}
+    <h1 class="text-4xl md:text-5xl font-extrabold text-teal-900 mb-10 tracking-tight animate-in fade-in slide-in-from-top duration-700">
+        Your Appointments
+    </h1>
+
+    {# Display error message if present #}
+    {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+            <strong class="font-bold">Error:</strong>
+            <span class="block sm:inline">{{ error }}</span>
+        </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"> {# Use grid for appointment cards #}
+        {% if appointments %}
+            {% for appointment in appointments %}
+                {# Appointment Card - Only show if status is NOT Completed or Cancelled #}
+                {% if appointment.status != 'Completed' and appointment.status != 'Cancelled' %}
+                <div id="appointment-card-{{ appointment._id | string }}"
+                     class="bg-white p-6 rounded-lg shadow-xl border border-teal-100 hover:shadow-2xl transition-shadow duration-300
+                            animate-in fade-in slide-in-from-bottom duration-700 delay-{{ loop.index * 50 }}"> {# Add a slight delay for animation #}
+
+                    <h3 class="text-xl font-semibold text-teal-800 mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Appointment with {{ appointment.patient_name }}
+                    </h3>
+
+                    <p class="text-gray-700 mb-2"><strong class="font-medium">Date:</strong> {{ appointment.appointment_time.strftime('%Y-%m-%d') if appointment.appointment_time else 'N/A' }}</p>
+                    <p class="text-gray-700 mb-2"><strong class="font-medium">Time:</strong> {{ appointment.appointment_time.strftime('%H:%M') if appointment.appointment_time else 'N/A' }} UTC</p> {# Display time #}
+
+                    {% if appointment.reason %}
+                        <p class="text-gray-700 mb-2"><strong class="font-medium">Reason:</strong> {{ appointment.reason }}</p>
+                    {% endif %}
+
+                    {% if appointment.patient_notes %}
+                         <div class="mb-2">
+                            <p class="text-gray-700 font-medium mb-1">Patient Notes:</p>
+                            <div class="bg-gray-100 p-3 rounded-md text-sm text-gray-800 italic whitespace-pre-wrap">{{ appointment.patient_notes }}</div>
+                         </div>
+                    {% endif %}
+
+                    <p class="text-gray-700 mb-2"><strong class="font-medium">Status:</strong>
+                        <span id="status-{{ appointment._id | string }}"
+                              class="px-2 py-1 rounded-full text-xs font-semibold
+                                     {% if appointment.status == 'Scheduled' %} bg-blue-100 text-blue-800
+                                     {% elif appointment.status == 'ReadyForCall' %} bg-green-100 text-green-800
+                                     {% elif appointment.status == 'InCall' %} bg-teal-100 text-teal-800
+                                     {% elif appointment.status == 'Completed' %} bg-gray-200 text-gray-800
+                                     {% elif appointment.status == 'Cancelled' %} bg-red-100 text-red-800
+                                     {% else %} bg-yellow-100 text-yellow-800
+                                     {% endif %}">
+                            {{ appointment.status }}
+                        </span>
+                    </p>
+
+                    {% if appointment.predicted_severity %}
+                         <p class="text-gray-700 mb-4"><strong class="font-medium">Severity:</strong>
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                   {% if appointment.predicted_severity == 'Very Serious' %} bg-red-500 text-white
+                                   {% elif appointment.predicted_severity == 'Moderate' %} bg-orange-400 text-white
+                                   {% elif appointment.predicted_severity == 'Normal' %} bg-green-400 text-white
+                                   {% else %} bg-gray-400 text-white
+                                   {% endif %}">
+                            {{ appointment.predicted_severity }}
+                            </span>
+                         </p>
+                    {% else %}
+                         <p class="text-gray-500 mb-4 text-sm italic">Severity analysis pending...</p>
+                    {% endif %}
+
+
+                    {# --- Call Action Section --- #}
+                    <div class="mt-4 flex flex-wrap gap-2" id="call-action-{{ appointment._id | string }}"> {# Use flex-wrap for buttons #}
+                        {% if appointment.gmeet_link and (appointment.status == 'ReadyForCall' or appointment.status == 'InCall') %}
+                            {# Show Join button if link exists and status is ready/in call #}
+                            <a href="{{ appointment.gmeet_link }}" target="_blank"
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1h10v8H5V6zm6 1c.552 0 1 .448 1 1v3a1 1 0 11-2 0V8c0-.552.448-1 1-1z"></path></svg> {# Example video icon #}
+                                Join Call
+                            </a>
+                             {# Add Mark as Completed button when call is ready/in progress #}
+                            <button class="mark-complete-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                    data-appointment-id="{{ appointment._id | string }}">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> {# Checkmark icon #}
+                                Mark as Completed
+                            </button>
+
+                        {% elif appointment.status == 'Scheduled' or appointment.status == 'Pending Approval' %} {# Show Add/Edit Link button for relevant statuses #}
+                             <button class="add-link-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                     data-appointment-id="{{ appointment._id | string }}">
+                                  <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a3 3 0 016 0v4a3 3 0 106 0V7a1 1 0 112 0v4a5 5 0 00-10 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg> {# Example link icon #}
+                                 Add/Edit Call Link
+                             </button>
+
+                             {# Hidden Input/Save Section #}
+                             <div class="link-input-section hidden mt-3 w-full" data-appointment-id="{{ appointment._id | string }}"> {# Added w-full #}
+                                 <label for="gmeet-link-{{ appointment._id | string }}" class="block text-sm font-medium text-gray-700 mb-1">Paste Meet Link:</label>
+                                 <input type="url" id="gmeet-link-{{ appointment._id | string }}"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm p-2"
+                                        placeholder="e.g. https://meet.google.com/..." value="{{ appointment.gmeet_link or '' }}"> {# Pre-fill if exists #}
+
+                                 <div class="mt-2 flex space-x-3">
+                                     <button type="button" class="save-link-btn inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                             data-appointment-id="{{ appointment._id | string }}">
+                                         Save Link
+                                     </button>
+                                     <button type="button" class="cancel-link-btn inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                                             data-appointment-id="{{ appointment._id | string }}">
+                                         Cancel
+                                     </button>
+                                 </div>
+                                 <p class="text-sm text-gray-500 mt-1">Saves link and marks status as 'ReadyForCall'.</p>
+                             </div>
+                         {% endif %}
+                     </div>
+                    {# --- End Call Action Section --- #}
+                </div>
+                {% endif %} {# End if status is not Completed or Cancelled #}
+            {% endfor %}
+        {% else %}
+            <div class="md:col-span-full bg-white p-6 rounded-lg shadow-xl border border-teal-100 text-center">
+                 <p class="text-gray-700 text-lg">You have no upcoming appointments.</p>
+            </div>
+        {% endif %}
+    </div>
+
+     {# Optional: Add a button back to the main dashboard #}
+     <div class="mt-10 animate-in fade-in slide-in-from-bottom duration-700 flex justify-center">
+         <a href="{{ url_for('get_doctor_dashboard') }}" class="inline-flex items-center bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200">
+             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path></svg>
+             Back to Dashboard
+         </a>
+     </div>
+
+</div>
+
+<script>
+    // JavaScript to handle the button clicks and link saving
+    document.addEventListener('DOMContentLoaded', function() {
+        const appointmentListDiv = document.querySelector('.grid.grid-cols-1'); // Container for appointment cards
+
+        if (appointmentListDiv) {
+            // Use event delegation for efficiency
+            appointmentListDiv.addEventListener('click', async function(event) {
+                const target = event.target;
+
+                // Handle "Add/Edit Call Link" button click
+                if (target.classList.contains('add-link-btn')) {
+                    const appointmentId = target.dataset.appointmentId;
+                    const linkInputSection = document.querySelector(`.link-input-section[data-appointment-id="${appointmentId}"]`);
+                    const addLinkButton = target;
+
+                    if (linkInputSection) {
+                        linkInputSection.classList.remove('hidden');
+                        addLinkButton.classList.add('hidden'); // Hide the add button
+                    }
+                }
+
+                // Handle "Cancel" button click
+                if (target.classList.contains('cancel-link-btn')) {
+                    const appointmentId = target.dataset.appointmentId;
+                    const linkInputSection = document.querySelector(`.link-input-section[data-appointment-id="${appointmentId}"]`);
+                    const addLinkButton = document.querySelector(`.add-link-btn[data-appointment-id="${appointmentId}"]`);
+                    const linkInput = linkInputSection.querySelector('input');
+
+                    if (linkInputSection) {
+                        linkInputSection.classList.add('hidden');
+                        if (addLinkButton) addLinkButton.classList.remove('hidden'); // Show the add button again
+                        // Optional: Reset the input value to its original state if needed
+                        // linkInput.value = linkInput.dataset.originalValue || '';
+                    }
+                }
+
+                // Handle "Save Link" button click
+                if (target.classList.contains('save-link-btn')) {
+                    const button = target;
+                    const appointmentId = button.dataset.appointmentId;
+                    const linkInputSection = document.querySelector(`.link-input-section[data-appointment-id="${appointmentId}"]`);
+                    const linkInput = linkInputSection.querySelector('input');
+                    const gmeetLink = linkInput.value.trim();
+                    const url = `/dashboard/appointments/${appointmentId}/set-call-link`; // Adjust URL based on your router prefix
+
+                    if (!gmeetLink) {
+                        alert("Please paste a Google Meet link.");
+                        return;
+                    }
+
+                    // Disable buttons and show loading feedback
+                    button.disabled = true;
+                    button.textContent = 'Saving...';
+                    const cancelButton = linkInputSection.querySelector('.cancel-link-btn');
+                    if(cancelButton) cancelButton.disabled = true;
+
+
+                    // Send the link to the backend
+                    try {
+                        const formData = new URLSearchParams();
+                        formData.append('gmeet_link', gmeetLink);
+
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded', // Use this for Form data
+                                // Include any necessary authentication headers
+                            },
+                            body: formData,
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const savedLink = data.gmeet_link;
+
+                            // Find the appointment card and update UI elements
+                            const appointmentCard = document.getElementById(`appointment-card-${appointmentId}`);
+                            if(appointmentCard) {
+                                // 1. Update Status Span
+                                const statusSpan = appointmentCard.querySelector(`#status-${appointmentId}`);
+                                if(statusSpan) {
+                                    statusSpan.textContent = 'ReadyForCall'; // Update status text
+                                    statusSpan.classList.remove('bg-blue-100', 'text-blue-800', 'bg-yellow-100', 'text-yellow-800'); // Remove old styles
+                                    statusSpan.classList.add('bg-green-100', 'text-green-800'); // Add new style
+                                }
+
+                                // 2. Find the call action container and replace input/save with Join button AND Complete button
+                                const callActionContainer = appointmentCard.querySelector(`#call-action-${appointmentId}`);
+                                if(callActionContainer) {
+                                     // Clear existing content
+                                     callActionContainer.innerHTML = '';
+                                     // Inject the new 'Join Call' link and 'Mark as Completed' button
+                                     callActionContainer.innerHTML = `
+                                        <a href="${savedLink}" target="_blank"
+                                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1h10v8H5V6zm6 1c.552 0 1 .448 1 1v3a1 1 0 11-2 0V8c0-.552.448-1 1-1z"></path></svg>
+                                            Join Call
+                                        </a>
+                                        <button class="mark-complete-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                                data-appointment-id="${appointmentId}">
+                                            <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> {# Checkmark icon #}
+                                            Mark as Completed
+                                        </button>
+                                    `;
+                                }
+                            }
+
+
+                        } else {
+                            const errorData = await response.json();
+                            alert('Error saving link: ' + (errorData.detail || response.statusText));
+                            button.disabled = false; // Re-enable buttons
+                            button.textContent = 'Save Link';
+                            if(cancelButton) cancelButton.disabled = false;
+                        }
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while trying to save the link.');
+                        button.disabled = false; // Re-enable buttons
+                        button.textContent = 'Save Link';
+                        if(cancelButton) cancelButton.disabled = false;
+                    }
+                }
+
+                // Handle "Mark as Completed" button click
+                if (target.classList.contains('mark-complete-btn')) {
+                    const button = target;
+                    const appointmentId = button.dataset.appointmentId;
+                    const url = `/dashboard/appointments/${appointmentId}/complete`; // NEW backend route
+
+                    // Disable button and show loading feedback
+                    button.disabled = true;
+                    button.textContent = 'Completing...';
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST', // Or PUT, depending on your backend design
+                            headers: {
+                                'Content-Type': 'application/json', // Or leave blank if no body
+                                // Include any necessary authentication headers
+                            },
+                            // No body needed for this simple status update
+                        });
+
+                        if (response.ok) {
+                            // Appointment marked as completed successfully
+                            const appointmentCard = document.getElementById(`appointment-card-${appointmentId}`);
+                            if (appointmentCard) {
+                                // Option 1: Remove the card from the list
+                                appointmentCard.remove();
+                                // Option 2: Hide the card (if you prefer not to remove)
+                                // appointmentCard.classList.add('hidden');
+
+                                // Optional: Show a success message to the doctor
+                                // alert('Appointment marked as completed.');
+                            }
+
+                        } else {
+                            const errorData = await response.json();
+                            alert('Error marking appointment as completed: ' + (errorData.detail || response.statusText));
+                            button.disabled = false; // Re-enable button
+                            button.textContent = 'Mark as Completed'; // Reset text
+                        }
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while trying to mark the appointment as completed.');
+                        button.disabled = false; // Re-enable button
+                        button.textContent = 'Mark as Completed'; // Reset text
+                    }
+                }
+
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aarogya AI - Healthcare Platform{% endblock %}</title>
+
+    <!-- Link to Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/tailwind.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', path='/favicon.ico') }}" type="image/x-icon">
+
+    <!-- Block for extra head elements -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50 transition-all duration-300" id="site-header">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="text-2xl font-bold text-teal-600 hover:text-teal-700 transition-colors duration-300">
+                Aarogya AI
+            </a>
+
+            <!-- Navigation -->
+            <nav class="hidden lg:flex space-x-6" id="main-nav">
+                <ul class="flex space-x-6 items-center">
+                    <li><a href="/" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Home</a></li>
+                    <li><a href="/appointments/book-appointment" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Appointment</a></li>
+                    <li><a href="/dashboard" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Dashboard</a></li>
+                    <li><a href="/patient/wellness" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Wellness</a></li>
+                    <li><a href="/profile" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Profile</a></li>
+                    <li><a href="/auth/login" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Login</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Nav Toggle -->
+            <button class="lg:hidden text-gray-700 focus:outline-none" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="lg:hidden hidden bg-white shadow-md" id="mobile-menu">
+            <ul class="flex flex-col space-y-4 p-4">
+                <li><a href="/" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Home</a></li>
+                <li><a href="/appointments/book-appointment" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Appointment</a></li>
+                <li><a href="/patient/wellness" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Wellness</a></li>
+                <li><a href="/dashboard" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Dashboard</a></li>
+                <li><a href="/profile" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Profile</a></li>
+                <li><a href="/auth/login" class="text-gray-700 hover:text-teal-600 font-medium transition-colors duration-300">Login</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20 min-h-screen">
+        {% block content %}
+        <!-- Content from extending templates will go here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white text-black py-6">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>© <span id="current-year"></span> Powered by Kushal K</p>
+        </div>
+    </footer>
+
+    <!-- Base JavaScript -->
+    <script>
+        // Update current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('site-header');
+            header.classList.toggle('bg-opacity-90', window.scrollY > 0);
+            header.classList.toggle('shadow-lg', window.scrollY > 0);
+        });
+
+        // Mobile nav toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        navToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const isExpanded = !mobileMenu.classList.contains('hidden');
+            navToggle.setAttribute('aria-expanded', isExpanded);
+        });
+    </script>
+
+    <!-- Block for extra body scripts -->
+    {% block extra_body_scripts %}{% endblock %}
+</body>
+</html>
