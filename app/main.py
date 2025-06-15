@@ -27,10 +27,11 @@ origins = [
     "http://10.0.2.2:8000",         # Essential for Android Emulator to access host machine's localhost (your backend)
     "http://192.168.1.X:8000",      # Replace X with your actual local IP if testing on physical device
     # Add your Flutter web app's deployed domain on Render.com (if you deploy Flutter as a web app)
-    "https://your-flutter-app-domain.onrender.com",
+    #"https://your-flutter-app-domain.onrender.com",
     # Add the domain where your FastAPI backend is hosted on Render.com
-    "https://your-fastapi-backend-domain.onrender.com", # REPLACE WITH YOUR ACTUAL RENDER DOMAIN
-    "*" # DANGER! Only use during early development for maximum flexibility. Remove for production.
+    "https://mobile-application-ldhe.onrender.com", # REPLACE WITH YOUR ACTUAL RENDER DOMAIN
+    "http://localhost:54094",
+    "http://localhost:53873"
 ]
 
 app.add_middleware(
